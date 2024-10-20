@@ -1,0 +1,27 @@
+[tool.black]
+target-version = ["py312"]
+
+[tool.poetry]
+name = "referral-system-api"
+version = "0.1.0"
+description = ""
+authors = ["Maksim <mksmvnv@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.2"
+sqlalchemy = "^2.0.36"
+asyncpg = "^0.29.0"
+uvicorn = "^0.32.0"
+passlib = "^1.7.4"
+pydantic-settings = "^2.6.0"
+pydantic = "^2.9.2"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
