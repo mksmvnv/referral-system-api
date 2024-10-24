@@ -10,6 +10,6 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=ReferrerResponse)
-async def referrer_register(referrer: Annotated[ReferrerRegister, Depends()]):
+async def referrer_register(referrer: Annotated[ReferrerRegister, Depends()]) -> ReferrerResponse:
     referrer = await referrer_service().register(referrer)
     return ReferrerResponse(username=referrer.username, status="success")

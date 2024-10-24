@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import EmailStr
 
 from sqlalchemy import select
@@ -10,13 +12,13 @@ from models.referrers import Referrer
 class ReferrerRepository(BaseRepository):
     model = Referrer
 
-    async def get_referrer_by_email(self, email: EmailStr):
+    async def get_referrer_by_email(self, email: EmailStr) -> Optional[Referrer | None]:
         async with async_session_maker() as session:
             stmt = select(Referrer).filter(Referrer.email == email)
             result = await session.execute(stmt)
             return result.scalar_one_or_none()
 
-    async def get_referrer_by_username(self, username: str):
+    async def get_referrer_by_username(self, username: str) -> Optional[Referrer | None]:
         async with async_session_maker() as session:
             stmt = select(Referrer).filter(Referrer.username == username)
             result = await session.execute(stmt)

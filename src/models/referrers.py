@@ -1,7 +1,7 @@
 from uuid import uuid4
 
-from sqlalchemy import String, Boolean, UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 from pydantic import EmailStr
 

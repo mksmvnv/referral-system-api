@@ -8,7 +8,7 @@ from schemas.referrers import ReferrerRegister
 
 
 class ReferrerService:
-    def __init__(self, referrer_repository: AbstractRepository):
+    def __init__(self, referrer_repository: AbstractRepository) -> None:
         self.referrer_repository: AbstractRepository = referrer_repository()
 
     async def register(self, register: Annotated[ReferrerRegister, Depends()]) -> dict:
