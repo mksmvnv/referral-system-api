@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends, HTTPException
 from repositories.base import AbstractRepository
 
+from auth.hasher import Hasher
 from schemas.referrers import ReferrerRegister
-from utils.hasher import Hasher
 
 
 class ReferrerService:
