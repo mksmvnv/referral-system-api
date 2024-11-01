@@ -48,7 +48,7 @@ async def create_referral_code(
     return ReferralCodeResponse(referral_code=referral_code)
 
 
-@router.post("/delete-referral-code", response_model=DeletedReferralCodeResponse)
+@router.delete("/delete-referral-code", response_model=DeletedReferralCodeResponse)
 async def delete_referral_code(
     current_user: str = Depends(decode_jwt),
 ) -> DeletedReferralCodeResponse:

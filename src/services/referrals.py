@@ -24,7 +24,7 @@ class ReferralService:
                 status_code=status.HTTP_409_CONFLICT, detail="Referral already exists"
             )
 
-        email = await redis.check_referral_code(register.referral_code)
+        email = await redis.get_email_by_referral_code(register.referral_code)
 
         if not email:
             raise HTTPException(

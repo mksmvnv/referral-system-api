@@ -18,16 +18,16 @@ class RedisTools:
         return cls.__redis_connection
 
     @classmethod
-    async def set_referral_code(cls, email: str, referral_code: str):
+    async def set_referral_code(cls, key: str, value: str):
         redis = await cls.get_connection()
         try:
-            await redis.setex(email, REDIS_TTL, referral_code)
+            await redis.setex(key, REDIS_TTL, value)
         except Exception as e:
-            logging.error(f"Error setting referral code for {email}: {e}")
-        return referral_code
+            logging.error(f"Error setting referral code for {key}: {e}")
+        return value
 
     @classmethod
-    async def get_referral_code(cls, email: str) -> str:
+    async def get_referral_code_by_email(cls, email: str) -> str:
         redis = await cls.get_connection()
         try:
             if await redis.exists(email):
@@ -38,14 +38,13 @@ class RedisTools:
             logging.error(f"Error getting referral code for {email}: {e}")
 
     @classmethod
-    async def check_referral_code(cls, referral_code: str) -> str:
+    async def get_email_by_referral_code(cls, referral_code: str) -> str:
         redis = await cls.get_connection()
         try:
-            async for key in redis.scan_iter():
-                value = await redis.get(key)
-                if value and value.decode("utf-8") == referral_code:
-                    return key.decode("utf-8")
-            return False
+            if await redis.exists(referral_code):
+                referral_code = await redis.get(referral_code)
+                return referral_code.decode("utf-8")
+            return None
         except Exception as e:
             logging.error(f"Error getting referral code for {referral_code}: {e}")
 
@@ -53,7 +52,9 @@ class RedisTools:
     async def delete_referral_code(cls, email: str):
         redis = await cls.get_connection()
         try:
+            referral_code = await redis.get(email)
             await redis.delete(email)
+            await redis.delete(referral_code)
         except Exception as e:
             logging.error(f"Error deleting referral code for {email}: {e}")
 

@@ -78,6 +78,7 @@ class ReferrerService:
         referral_code = str(uuid4())
 
         await redis.set_referral_code(email, referral_code)
+        await redis.set_referral_code(referral_code, email)
 
         return referral_code
 
@@ -118,7 +119,7 @@ class ReferrerService:
             )
 
         try:
-            referral_code = await redis.get_referral_code(email)
+            referral_code = await redis.get_referral_code_by_email(email)
             if not referral_code:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
