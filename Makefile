@@ -1,15 +1,16 @@
 .PHONY: all run tests lint
 
-export $(shell sed 's/=.*//' .env)
+export app_host
+export app_port
 
-WORDDIR=./src
+WORKDIR=src
 FLAGS=--config pyproject.toml
 
 all: run tests lint
 
 run:
 	@echo "Starting server..."
-	@poetry run python3 $(WORDDIR)/main.py
+	@poetry run uvicorn $(WORKDIR).main:app --reload --host $(app_host) --port ${app_port}
 
 # tests:
 # 	@echo "Running tests..."
@@ -17,5 +18,5 @@ run:
 
 lint:
 	@echo "Linting..."
-	@poetry run black $(WORDDIR) $(FLAGS)
+	@poetry run black ./$(WORKDIR) $(FLAGS)
 	@echo "Linting done"

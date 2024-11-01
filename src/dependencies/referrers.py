@@ -1,5 +1,5 @@
-from services.referrers import ReferrerService
-from repositories.referrers import ReferrerRepository
+from src.services.referrers import ReferrerService
+from src.repositories.referrers import ReferrerRepository
 
 
 def referrer_service() -> ReferrerService:
