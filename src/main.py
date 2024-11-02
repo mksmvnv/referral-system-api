@@ -35,5 +35,5 @@ app = FastAPI(
     version="1.0.0",
 )
 
-app.include_router(referrer_router, prefix=settings.api.prefix)
-app.include_router(visitor_router, prefix=settings.api.prefix)
+app.include_router(referrer_router, prefix=settings.api.PREFIX)
+app.include_router(visitor_router, prefix=settings.api.PREFIX)

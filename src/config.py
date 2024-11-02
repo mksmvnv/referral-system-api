@@ -3,23 +3,23 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class APISettings(BaseModel):
-    prefix: StrictStr
+    PREFIX: StrictStr
 
 
 class PostgresSettings(BaseModel):
-    url: StrictStr
+    URL: StrictStr
 
 
 class AuthJWTSettings(BaseModel):
-    private_key_path: FilePath
-    public_key_path: FilePath
-    algorithm: StrictStr
-    access_token_expire_minutes: PositiveInt
+    PRIVATE_KEY_PATH: FilePath
+    PUBLIC_KEY_PATH: FilePath
+    ALGORITHM: StrictStr
+    ACCESS_TOKEN_EXPIRE_MINUTES: PositiveInt
 
 
 class RedisSettings(BaseModel):
-    url: StrictStr
-    ttl: PositiveInt
+    URL: StrictStr
+    TTL: PositiveInt
 
 
 class Settings(BaseSettings):

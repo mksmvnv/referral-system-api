@@ -4,8 +4,8 @@ from redis.asyncio import from_url, Redis
 
 from src.config import settings
 
-REDIS_URL = settings.redis.url
-REDIS_TTL = settings.redis.ttl
+REDIS_URL = settings.redis.URL
+REDIS_TTL = settings.redis.TTL
 
 
 class RedisTools:

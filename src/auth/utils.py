@@ -12,11 +12,11 @@ from src.config import settings
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="api/v1/referrers/login")
 
-PRIVATE_KEY = settings.auth.private_key_path.read_text()
-PUBLIC_KEY = settings.auth.public_key_path.read_text()
+PRIVATE_KEY = settings.auth.PRIVATE_KEY_PATH.read_text()
+PUBLIC_KEY = settings.auth.PUBLIC_KEY_PATH.read_text()
 
-ALGORITHM = settings.auth.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.auth.access_token_expire_minutes
+ALGORITHM = settings.auth.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.auth.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def encode_jwt(payload: dict, expires_delta: Optional[timedelta] = None) -> str:
