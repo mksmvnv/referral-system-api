@@ -1,24 +1,20 @@
 .PHONY: all run tests lint
-.SILENT: all run tests lint
+# .SILENT: all run tests lint
 
-export APP_HOST
-export APP_PORT
-
-export POSTGRES_HOST
-export POSTGRES_PORT
+export $(cat .env | grep -v ^# | xargs)
+export $(cat .env.test | grep -v ^# | xargs)
 
 WORKDIR=src
-FLAGS=--config pyproject.toml
+FLAGS=--config pyproject.toml 
 
-all: run redis tests lint 
+all: # no op
 
 run:
-	echo "Starting server..."
-	poetry run uvicorn $(WORKDIR).main:app --host $(APP_HOST) --port $(APP_PORT)
+	docker-compose -f docker-compose.yml up -d --build
 
-# tests:
-# 	@echo "Running tests..."
-# 	@poetry run pytest $(WORKDIR)/tests
+tests:
+	docker-compose -f docker-compose.test.yml up --abort-on-container-exit --build
+	docker-compose -f docker-compose.test.yml down --volumes
 
 lint:
 	echo "Linting..."

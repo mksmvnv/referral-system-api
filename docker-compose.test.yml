@@ -1,0 +1,58 @@
+services:
+  api-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rsa-api-test
+    env_file:
+      - .env.test
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    ports:
+      - "8002:8000"
+    networks:
+      - rsa_net_test
+    restart: "no"
+    environment:
+      - PYTHONPATH=/app
+    command: ["sh", "-c", "pytest src/tests"]
+
+  postgres-test:
+    build:
+      context: ./src/databases/docker/postgres
+    container_name: rsa-postgres-test
+    env_file:
+      - .env.test
+    volumes:
+      - postgres_data_test:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - rsa_net_test
+    restart: "no"
+
+  redis-test:
+    build:
+      context: ./src/databases/docker/redis
+    container_name: rsa-redis-test
+    env_file:
+      - .env.test
+    ports:
+      - "6381:6379"
+    networks:
+      - rsa_net_test
+    restart: "no"
+
+volumes:
+  postgres_data_test:
+
+networks:
+  rsa_net_test:
+    driver: bridge
+
+

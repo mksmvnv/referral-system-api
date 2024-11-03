@@ -8,7 +8,6 @@ WORKDIR /app
 COPY . .
 
 RUN apt-get update && \
-    apt-get install -y make && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -17,6 +16,9 @@ RUN pip install --upgrade pip && \
     poetry config virtualenvs.create false && \
     poetry install --no-dev
 
-EXPOSE 8001
+EXPOSE 8000
 
-CMD ["make", "run"]
+CMD ["sh", "-c", "uvicorn src.main:app --host $APP_HOST --port $APP_PORT"]
+
+
+

@@ -22,6 +22,8 @@ python-multipart = "^0.0.17"
 black = "^24.10.0"
 pydantic = {extras = ["email"], version = "^2.9.2"}
 pyjwt = {extras = ["crypto"], version = "^2.9.0"}
+pytest = "^8.3.3"
+httpx = "^0.27.2"
 
 [build-system]
 requires = ["poetry-core"]
