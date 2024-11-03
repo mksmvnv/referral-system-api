@@ -1,13 +1,13 @@
 services:
   api:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     container_name: rsa-api
     env_file:
       - .env
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -19,11 +19,10 @@ services:
       - rsa_net
     restart: always
 
-  db:
-    image: postgres:16
-    container_name: rsa-db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  postgres:
+    build:
+      context: ./src/databases/docker/postgres
+    container_name: rsa-postgres
     env_file:
       - .env
     ports:
@@ -31,14 +30,10 @@ services:
     networks:
       - rsa_net
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
-    image: redis:latest
+    build:
+      context: ./src/databases/docker/redis
     container_name: rsa-redis
     env_file:
       - .env
@@ -47,16 +42,6 @@ services:
     networks:
       - rsa_net
     restart: always
-    command: sh -c '
-      mkdir -p /usr/local/etc/redis &&
-      echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
-      echo "requirepass $$REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
-      redis-server /usr/local/etc/redis/redis.conf'
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$$REDIS_PASSWORD", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_data:
