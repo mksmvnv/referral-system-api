@@ -1,15 +1,12 @@
-from uuid import uuid4, UUID
-from typing import Optional
+from uuid import UUID
 
 from fastapi import HTTPException, status
 
 from src.auth.hasher import Hasher
-from src.auth.utils import encode_jwt
 
 from src.databases.redis import RedisTools
 from src.repositories.base import AbstractRepository
 from src.schemas.referrers import ReferrerRegister
-from src.schemas.referrals import ReferralList
 
 
 class ReferralService:

@@ -1,7 +1,7 @@
 from typing import Annotated
 from annotated_types import Len
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseToken(BaseModel):
@@ -12,5 +12,4 @@ class BaseToken(BaseModel):
 class TokenResponse(BaseToken):
     username: Annotated[str, Len(4, 32)]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

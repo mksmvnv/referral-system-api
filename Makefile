@@ -1,5 +1,5 @@
 .PHONY: all run tests lint
-# .SILENT: all run tests lint
+.SILENT: all run tests lint
 
 export $(cat .env | grep -v ^# | xargs)
 export $(cat .env.test | grep -v ^# | xargs)

@@ -1,3 +1,5 @@
+import logging
+
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
@@ -11,21 +13,34 @@ from src.routers.visitors import router as visitor_router
 from src.config import settings
 
 
+logging.basicConfig(
+    filename="rsa.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     try:
         await RedisTools.get_connection()
+        logging.info("Connected to Redis")
         yield
-    except Exception as e:
+    except Exception:
+        logging.error("Failed to connect to Redis")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to connect to Redis",
         )
     finally:
         try:
             await RedisTools.close_connection()
-        except Exception as e:
+            logging.info("Closed connection to Redis")
+        except Exception:
+            logging.error("Failed to close connection to Redis")
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to close connection to Redis",
             )
 
 

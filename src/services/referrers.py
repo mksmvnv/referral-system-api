@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import HTTPException, status
 
 from src.auth.hasher import Hasher
-from src.auth.utils import encode_jwt
+from src.auth.jwt import create_access_token
 
 from src.databases.redis import RedisTools
 from src.repositories.base import AbstractRepository
@@ -33,6 +33,7 @@ class ReferrerService:
             )
 
         hashed_password = Hasher.get_password_hash(register.password)
+
         referrer_data = register.model_dump(exclude={"password", "referral_code"})
         referrer_data["hashed_password"] = hashed_password
 
@@ -42,7 +43,7 @@ class ReferrerService:
     async def login(self, referrer: ReferrerLogin) -> dict:
         db_referrer = await self.referrer_repository.get_by_username(referrer.username)
 
-        if not self.authenticate(referrer.username, referrer.password):
+        if not await self.authenticate(referrer.username, referrer.password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
             )
@@ -52,7 +53,7 @@ class ReferrerService:
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Referrer is inactive"
             )
 
-        access_token = encode_jwt(
+        access_token = create_access_token(
             payload={
                 "sub": db_referrer.email,
                 "username": db_referrer.username,

@@ -1,7 +1,7 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from annotated_types import Len
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class BaseReferrer(BaseModel):
@@ -11,7 +11,7 @@ class BaseReferrer(BaseModel):
 class ReferrerRegister(BaseReferrer):
     email: Annotated[EmailStr, Len(4, 32)]
     password: Annotated[str, Len(8, 128)]
-    referral_code: Annotated[str | None, ...] = None
+    referral_code: Annotated[Optional[str], ...] = None
 
 
 class ReferrerLogin(BaseModel):
@@ -24,8 +24,7 @@ class ReferrerResponse(BaseModel):
     status: Annotated[str, ...]
     is_active: Annotated[bool, ...] = True
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ReferralCodeResponse(BaseModel):

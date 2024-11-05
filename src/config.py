@@ -1,24 +1,24 @@
-from pydantic import BaseModel, FilePath, StrictStr, PositiveInt
+from pydantic import BaseModel, FilePath, PositiveInt
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class APISettings(BaseModel):
-    PREFIX: StrictStr
+    PREFIX: str
 
 
 class PostgresSettings(BaseModel):
-    URL: StrictStr
+    URL: str
 
 
 class AuthJWTSettings(BaseModel):
     PRIVATE_KEY_PATH: FilePath
     PUBLIC_KEY_PATH: FilePath
-    ALGORITHM: StrictStr
+    ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: PositiveInt
 
 
 class RedisSettings(BaseModel):
-    URL: StrictStr
+    URL: str
     TTL: PositiveInt
 
 
