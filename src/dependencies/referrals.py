@@ -3,4 +3,5 @@ from src.repositories.referrals import ReferralRepository
 
 
 def referral_service() -> ReferralService:
-    return ReferralService(ReferralRepository)
+    referral_repository = ReferralRepository()
+    return ReferralService(referral_repository)

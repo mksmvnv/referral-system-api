@@ -2,6 +2,7 @@ from uuid import uuid4
 from typing import Optional
 
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from src.auth.hasher import Hasher
 from src.auth.jwt import create_access_token
@@ -13,7 +14,7 @@ from src.schemas.referrers import ReferrerRegister, ReferrerLogin
 
 class ReferrerService:
     def __init__(self, referrer_repository: AbstractRepository) -> None:
-        self.referrer_repository: AbstractRepository = referrer_repository()
+        self.referrer_repository: AbstractRepository = referrer_repository
 
     async def authenticate(self, username: str, password: str) -> Optional[dict]:
         db_referrer = await self.referrer_repository.get_by_username(username)
@@ -40,7 +41,7 @@ class ReferrerService:
         referrer = await self.referrer_repository.create(referrer_data)
         return referrer
 
-    async def login(self, referrer: ReferrerLogin) -> dict:
+    async def login(self, referrer: OAuth2PasswordRequestForm) -> str:
         db_referrer = await self.referrer_repository.get_by_username(referrer.username)
 
         if not await self.authenticate(referrer.username, referrer.password):
@@ -59,6 +60,7 @@ class ReferrerService:
                 "username": db_referrer.username,
             }
         )
+
         return access_token
 
     async def create_referral_code(self, redis: RedisTools, current_user: str) -> str:
@@ -83,7 +85,7 @@ class ReferrerService:
 
         return referral_code
 
-    async def delete_referral_code(self, redis: RedisTools, current_user: str) -> str:
+    async def delete_referral_code(self, redis: RedisTools, current_user: str) -> bool:
         db_referrer = await self.referrer_repository.get_by_email(current_user)
 
         if not db_referrer:

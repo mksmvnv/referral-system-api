@@ -12,7 +12,7 @@ REDIS_TTL = settings.redis.TTL
 
 
 class RedisTools:
-    __redis_connection: Redis = None
+    __redis_connection: Optional[Redis] = None
 
     @classmethod
     async def get_connection(cls) -> Redis:
@@ -38,16 +38,21 @@ class RedisTools:
             return None
         except Exception:
             logging.error(f"Error getting referral code for {email}")
+            return None
 
     @classmethod
-    async def get_email_by_referral_code(cls, referral_code: str) -> Optional[str]:
+    async def get_email_by_referral_code(
+        cls, referral_code: Optional[str]
+    ) -> Optional[str]:
         redis = await cls.get_connection()
         try:
-            if await redis.exists(referral_code):
-                return await redis.get(referral_code)
+            if referral_code is not None:
+                if await redis.exists(referral_code):
+                    return await redis.get(referral_code)
             return None
         except Exception:
             logging.error(f"Error getting email for {referral_code}")
+            return None
 
     @classmethod
     async def delete_referral_code(cls, email: str) -> None:
@@ -65,3 +70,6 @@ class RedisTools:
         if cls.__redis_connection:
             await cls.__redis_connection.close()
             cls.__redis_connection = None
+
+
+redis = RedisTools()

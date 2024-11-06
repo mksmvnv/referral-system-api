@@ -22,8 +22,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.auth.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def create_access_token(
-    payload: dict = None, expires_delta: Optional[timedelta] = None
+    payload: Optional[dict] = None, expires_delta: Optional[timedelta] = None
 ) -> str:
+    if not payload:
+        raise ValueError("Payload cannot be empty")
     to_encode = payload.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -41,9 +43,7 @@ def create_access_token(
     return access_token
 
 
-async def get_current_user(
-    access_token: Annotated[str, Depends(oauth2_scheme)]
-) -> dict:
+async def get_current_user(access_token: Annotated[str, Depends(oauth2_scheme)]) -> str:
     try:
         payload = jwt.decode(access_token, PUBLIC_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

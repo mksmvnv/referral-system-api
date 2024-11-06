@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from typing import Dict, List, Sequence
+
 from fastapi import HTTPException, status
 
 from src.auth.hasher import Hasher
@@ -7,13 +9,14 @@ from src.auth.hasher import Hasher
 from src.databases.redis import RedisTools
 from src.repositories.base import AbstractRepository
 from src.schemas.referrers import ReferrerRegister
+from src.schemas.referrals import Referral
 
 
 class ReferralService:
     def __init__(self, referral_repository: AbstractRepository) -> None:
-        self.referral_repository: AbstractRepository = referral_repository()
+        self.referral_repository: AbstractRepository = referral_repository
 
-    async def register(self, redis: RedisTools, register: ReferrerRegister) -> dict:
+    async def register(self, redis: RedisTools, register: ReferrerRegister) -> Dict:
         if await self.referral_repository.get_by_email(
             register.email
         ) or await self.referral_repository.get_by_username(register.username):
@@ -30,15 +33,21 @@ class ReferralService:
 
         referral = await self.referral_repository.get_by_email(email)
 
+        if referral is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Referrer not found"
+            )
+
         hashed_password = Hasher.get_password_hash(register.password)
         referral_data = register.model_dump(exclude={"password"})
         referral_data["hashed_password"] = hashed_password
         referral_data["referrer_id"] = referral.id
 
         referral = await self.referral_repository.create(referral_data)
+
         return referral
 
-    async def get_all_referrals(self, id: UUID) -> dict:
+    async def get_all_referrals(self, id: UUID) -> List[Referral]:
         referrals = await self.referral_repository.get_all(id)
         if not referrals:
             raise HTTPException(

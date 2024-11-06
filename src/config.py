@@ -1,32 +1,33 @@
+from pathlib import Path
 from pydantic import BaseModel, FilePath, PositiveInt
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class APISettings(BaseModel):
-    PREFIX: str
+    PREFIX: str = "/api"
 
 
 class PostgresSettings(BaseModel):
-    URL: str
+    URL: str = "postgresql://user:password@localhost/dbname"
 
 
 class AuthJWTSettings(BaseModel):
-    PRIVATE_KEY_PATH: FilePath
-    PUBLIC_KEY_PATH: FilePath
-    ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: PositiveInt
+    PRIVATE_KEY_PATH: FilePath = Path("path/to/private.key")
+    PUBLIC_KEY_PATH: FilePath = Path("path/to/public.key")
+    ALGORITHM: str = "RS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: PositiveInt = 15
 
 
 class RedisSettings(BaseModel):
-    URL: str
-    TTL: PositiveInt
+    URL: str = "redis://localhost:6379"
+    TTL: PositiveInt = 300
 
 
 class Settings(BaseSettings):
-    api: APISettings
-    postgres: PostgresSettings
-    auth: AuthJWTSettings
-    redis: RedisSettings
+    api: APISettings = APISettings()
+    postgres: PostgresSettings = PostgresSettings()
+    auth: AuthJWTSettings = AuthJWTSettings()
+    redis: RedisSettings = RedisSettings()
 
     model_config = SettingsConfigDict(
         env_nested_delimiter="__",

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter
 
-from src.databases.redis import RedisTools
+from src.databases.redis import redis
 from src.schemas.referrers import ReferralCodeResponse
 from src.schemas.referrals import ReferralList
 from src.dependencies.referrers import referrer_service
@@ -14,9 +14,7 @@ router = APIRouter(prefix="/visitors", tags=["Visitors"])
 
 @router.get("/get_referral_code", response_model=ReferralCodeResponse)
 async def get_referral_code(email: str) -> ReferralCodeResponse:
-    referral_code = await referrer_service().get_referral_code(
-        redis=RedisTools, email=email
-    )
+    referral_code = await referrer_service().get_referral_code(redis=redis, email=email)
     return ReferralCodeResponse(referral_code=referral_code)
 
 
