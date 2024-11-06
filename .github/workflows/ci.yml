@@ -35,7 +35,7 @@ jobs:
           poetry install
       - name: Run tests
         run: |
-          poetry run src/tests/pytest
+          poetry run pytest ./src/tests
       - name: Run mypy
         run: |
           poetry run mypy ./
