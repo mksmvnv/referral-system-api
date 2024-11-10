@@ -20,7 +20,7 @@ services:
     restart: "no"
     environment:
       - PYTHONPATH=/app
-    command: ["sh", "-c", "pytest src/tests"]
+    command: ["sh", "-c", "alembic upgrade head && pytest src/tests"]
 
   postgres-test:
     build:
