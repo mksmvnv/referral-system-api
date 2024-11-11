@@ -13,34 +13,30 @@ from src.routers.visitors import router as visitor_router
 from src.config import settings
 
 
-logging.basicConfig(
-    filename="rsa.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     try:
         await RedisTools.get_connection()
-        logging.info("Connected to Redis")
+        logger.info("Connected to Redis")
         yield
     except Exception:
-        logging.error("Failed to connect to Redis")
+        logger.error("Failed to connect to Redis", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to connect to Redis",
+            detail="Internal service error. Please try again later.",
         )
     finally:
         try:
             await RedisTools.close_connection()
-            logging.info("Closed connection to Redis")
+            logger.info("Closed connection to Redis")
         except Exception:
-            logging.error("Failed to close connection to Redis")
+            logger.error("Failed to close connection to Redis", exc_info=True)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to close connection to Redis",
+                detail="Internal service error. Please try again later.",
             )
 
 
